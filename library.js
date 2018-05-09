@@ -105,6 +105,10 @@
   };
 
   EveOnlineSSO.completeProfile = function(profile, accessToken, refreshToken, callback) {
+    if (!profile.CharacterID || !profile.CharacterName || !profile.CharacterOwnerHash) {
+      return callback(new Error('No chracter information provided. If logging in via Steam or Facebook, be sure to associate a character with this login.'));
+    }
+
     async.waterfall([
       // get character info
       function (next) {
@@ -115,6 +119,10 @@
           port: 443,
           path: '/latest/characters/' + profile.CharacterID + '/'
         }, function (res) {
+          if (res.statusCode !== 200) {
+            return next(new Error('Unable to find your character information. Contact forum support.'));
+          }
+
           var responseData = '';
 
           res.on('data', function (data) {
@@ -122,14 +130,14 @@
           });
 
           res.on('error', function (err) {
-            console.error('Error', err.message);
+            return next(new Error('Unable to find your character information. Contact forum support.'));
           });
 
           res.on('end', function() {
             var body = JSON.parse(responseData);
 
-            profile.AllianceID = body.alliance_id;
             profile.CorporationID = body.corporation_id;
+            profile.AllianceID = body.alliance_id || null;
 
             next(null, profile);
           });
@@ -142,6 +150,10 @@
           port: 443,
           path: '/latest/corporations/' + profile.CorporationID + '/'
         }, function (res) {
+          if (res.statusCode !== 200) {
+            return next(new Error('Unable to find your character corporation information. Contact forum support.'));
+          }
+
           var responseData = '';
 
           res.on('data', function (data) {
@@ -149,7 +161,7 @@
           });
 
           res.on('error', function (err) {
-            console.error('Error', err.message);
+            return next(new Error('Unable to find your character corporation information. Contact forum support.'));
           });
 
           res.on('end', function() {
@@ -170,6 +182,10 @@
             Authorization: 'Bearer ' + accessToken
           }
         }, function (res) {
+          if (res.statusCode !== 200) {
+            return next(new Error('Unable to find your character title information. Contact forum support.'));
+          }
+
           var responseData = '';
 
           res.on('data', function (data) {
@@ -177,7 +193,7 @@
           });
 
           res.on('error', function (err) {
-            console.error('Error', err.message);
+            return next(new Error('Unable to find your character title information. Contact forum support.'));
           });
 
           res.on('end', function() {
@@ -210,7 +226,13 @@
         passReqToCallback: true
       }, function (req, accessToken, refreshToken, profile, done) {
         EveOnlineSSO.completeProfile(profile, accessToken, refreshToken, function (err, profile) {
+          if (err) {
+            return done(err);
+          }
+
           var eveonlinessoid = 'character_' + profile.CharacterID + '-' + profile.CharacterOwnerHash;
+
+          console.log('eveonlinessoid', eveonlinessoid);
 
           // If user is already logged in
           if (req.hasOwnProperty('user') && req.user.hasOwnProperty('uid') && req.user.uid > 0) {
@@ -270,7 +292,7 @@
           uid: uid
         });
       } else {
-        // user not found, let's see if we can find a legacy seat login
+        // user not found, let's see if we can find a legacy EVE SeAT logins
         EveOnlineSSO.searchEveSeatIds(profile.CharacterID, eveonlinessoid, function(err, uid) {
           if (uid !== null) {
             winston.verbose('[plugin-sso-eveonline] Logging in User via plugin-sso-eveonline with legacy eveseatid ' + uid);
@@ -289,7 +311,7 @@
                 return callback(err);
               }
 
-              // Save Eve SeAT specific information to the user
+              // Save Eve Online SSO specific information to the user
               user.setUserField(uid, 'eveonlinessoid', eveonlinessoid);
               db.setObjectField('eveonlinessoid:uid', eveonlinessoid, uid);
 
