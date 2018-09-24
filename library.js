@@ -292,17 +292,6 @@
           uid: uid
         });
       } else {
-        // user not found, let's see if we can find a legacy EVE SeAT logins
-        EveOnlineSSO.searchEveSeatIds(profile.CharacterID, eveonlinessoid, function(err, uid) {
-          if (uid !== null) {
-            winston.verbose('[plugin-sso-eveonline] Logging in User via plugin-sso-eveonline with legacy eveseatid ' + uid);
-
-            callback(null, {
-              uid: uid
-            });
-
-          // New user
-          } else {
             winston.verbose('[plugin-sso-eveonline] Creating New User via plugin-sso-eveonline ' +  profile.CharacterName);
 
             // New User
@@ -319,10 +308,8 @@
                 uid: uid
               });
             });
-          }
-        });
+          }  
       }
-    });
   };
 
   // Simple array diff function
@@ -442,48 +429,7 @@
     user.setUserField(uid, 'evesonlinessorefreshtoken', refreshToken);
   };
 
-  // Get UID
-  EveOnlineSSO.getUidByEveSeatId = function(eveseatid, callback) {
-    db.getObjectField('eveseatid:uid', eveseatid, function(err, uid) {
-      if (err) {
-        return callback(err);
-      }
-
-      callback(null, uid);
-    });
-  };
-
-  EveOnlineSSO.searchEveSeatIds = function(characterID, eveonlinessoid, callback) {
-    db.getObject('eveseatid:uid', function(err, values) {
-      if (err) {
-        return callback(err);
-      }
-
-      let uid = null;
-
-      let k;
-      for (k of Object.keys(values)) {
-        if (k.endsWith('-' + characterID)) {
-          uid = values[k];
-
-          break;
-        }
-      }
-
-      if (uid) {
-        // don't associate with a user alread migrated
-        user.getUserField(uid, eveonlinessoid, function(err, value) {
-          if (value) {
-            callback(null, null);
-          } else {
-            callback(null, uid);
-          }
-        });
-      } else {
-        callback(null, null);
-      }
-    });
-  };
+  
 
   // Get UID
   EveOnlineSSO.getUidByEveOnlineSsoId = function(eveonlinessoid, callback) {
