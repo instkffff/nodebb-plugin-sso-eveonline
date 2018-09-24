@@ -1,6 +1,5 @@
 (function(module) {
 
-  'use strict';
 
   var	user = module.parent.require('./user'),
     Groups = module.parent.require('./groups'),
@@ -276,41 +275,41 @@
     callback(null, strategies);
   };
 
-  // Login from strategy
-  EveOnlineSSO.login = function(eveonlinessoid, profile, accessToken, refreshToken, callback) {
-    // search for the user
-    EveOnlineSSO.getUidByEveOnlineSsoId(eveonlinessoid, function(err, uid) {
-      if(err) {
-        return callback(err);
-      }
+  //login from strategy
+  EveOnlineSSO.login = function(eveonlinessoid,profile,accessToken,refreshToken,callback){
+  	//search for the user
+  	EveOnlineSSO.getUidByEveOnlineSsoId(eveonlinessoid,function(err,uid){
+  		if (err) {
+  			return callback(err)
+  		}
 
-      if (uid !== null) {
-        // Existing User
-        winston.verbose('[plugin-sso-eveonline] Logging in User via plugin-sso-eveonline ' + uid);
+  		if (uid !== null) {
+  			//existing user
+  			winston.verbose('[plugin-sso-eveonline] Logging in User via plugin-sso-eveonline' + uid)
 
-        callback(null, {
-          uid: uid
-        });
-      } else {
-            winston.verbose('[plugin-sso-eveonline] Creating New User via plugin-sso-eveonline ' +  profile.CharacterName);
+  			callback(null,{
+  				uid:uid
+  			})
+  		} else{
+  			//new user
+  			winston.verbose('[plugin-sso-eveonline] Create New User via plugin-sso-eveonline' + profile.CharacterName)
 
-            // New User
-            user.create({username: profile.CharacterName}, function(err, uid) {
-              if(err) {
-                return callback(err);
-              }
+  			user.create({username: profile.CharacterName},function(err,uid){
+  				if(err){
+  					return callback(err)
+  				}
 
-              // Save Eve Online SSO specific information to the user
-              user.setUserField(uid, 'eveonlinessoid', eveonlinessoid);
-              db.setObjectField('eveonlinessoid:uid', eveonlinessoid, uid);
+  				// Save Eve Online SSO specific information to the user
+  				user.setUserField(uid, 'eveonlinessoid'  ,eveonlinessoid)
+  				db.setObjectField('eveonlinessoid:uid',eveonlinessoid,uid)
 
-              callback(null, {
-                uid: uid
-              });
-            });
-          }  
-      }
-  };
+  				callback(null,{
+  					uid:uid
+  				})
+  			})
+  		}
+  	})
+  }
 
   // Simple array diff function
   Array.prototype.diff = function(a) {
