@@ -332,7 +332,7 @@
         user.setUserField(uid, 'uploadedpicture', profile.CharacterPortrait, next);
       },
       function (next) {
-        user.setUserField(uid, 'picture', profile.AllianceIcon, next);
+        user.setUserField(uid, 'picture', profile.CharacterPortrait, next);
       },
       function (next) {
         user.setUserField(uid, 'eveonlinessoid', eveonlinessoid, next);
