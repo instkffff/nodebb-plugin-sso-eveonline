@@ -137,11 +137,11 @@
 
             profile.CorporationID = body.corporation_id;
             profile.AllianceID = body.alliance_id || null;
-            profile.CorporationIcon = '//image.eveonline.com/Corporation/' + profile.CorporationID + '_256.jpg';
+            profile.CorporationIcon = '//imageserver.eveonline.com/Corporation/' + profile.CorporationID + '_256.jpg';
             if(profile.AllianceID === null){
               profile.AllianceIcon = '//imageserver.eveonline.com/Corporation/1_256.png';
             }else{
-              profile.AllianceIcon = '//image.eveonline.com/Alliance/' + profile.AllianceID + '_256.jpg' ;
+              profile.AllianceIcon = '//imageserver.eveonline.com/Alliance/' + profile.AllianceID + '_256.jpg' ;
             };
 
             next(null, profile);
