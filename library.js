@@ -318,15 +318,13 @@
 
   // Update the user profile when logging in
   EveOnlineSSO.updateProfile = function(uid, eveonlinessoid, profile, callback) {
+    profile.CorporationIcon = '//image.eveonline.com/Corporation/' + profile.CorporationID + '_256.jpg';
+    if(profile.AllianceID === null){
+      profile.AllianceIcon = '//imageserver.eveonline.com/Corporation/1_256.png';
+    }else{
+      profile.AllianceIcon = '//image.eveonline.com/Alliance/' + profile.AllianceID + '_256.jpg' ;
+    };
     async.waterfall([
-      function (next){
-        profile.CorporationIcon = '//image.eveonline.com/Corporation/' + profile.CorporationID + '_256.jpg';
-          if(profile.AllianceID === null){
-            profile.AllianceIcon = '//imageserver.eveonline.com/Corporation/1_256.png';
-          }else{
-            profile.AllianceIcon = '//image.eveonline.com/Alliance/' + profile.AllianceID + '_256.jpg' ;
-        };
-      },
       function (next) {
         user.setUserField(uid, 'fullname', profile.CharacterName, next);
       },
@@ -340,10 +338,10 @@
         user.setUserField(uid, 'eveonlinessoid', eveonlinessoid, next);
       },
       function (next) {
-        user.setUserField('eveonlinessoid:uid', profile.CorporationIcon, uid, next);
+        user.setUserField(uid, 'corporation', profile.CorporationIcon, uid, next);
       },
       function (next) {
-        user.setUserField('eveonlinessoid:uid', profile.AllianceIcon, uid, next);
+        user.setUserField(uid, 'alliance', profile.AllianceIcon, uid, next);
       },
       function (next) {
         db.setObjectField('eveonlinessoid:uid', eveonlinessoid, uid, next);
