@@ -343,6 +343,7 @@
       function (next) {
         user.setUserField(uid, 'alliancepicture', profile.AllianceIcon, next);
       },
+      console.log(profile.AllianceIcon)
       //corp icon
       function (next) {
         user.setUserField(uid, 'corppicture', profile.CorporationIcon, next);
