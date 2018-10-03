@@ -137,12 +137,14 @@
 
             profile.CorporationID = body.corporation_id;
             profile.AllianceID = body.alliance_id || null;
-            profile.CorporationIcon = '//imageserver.eveonline.com/Corporation/' + profile.CorporationID + '_256.jpg';
+
+            profile.CorporationIcon = '//image.eveonline.com/Corporation/' + profile.CorporationID + '_256.jpg';
             if(profile.AllianceID === null){
               profile.AllianceIcon = '//imageserver.eveonline.com/Corporation/1_256.png';
             }else{
-              profile.AllianceIcon = '//imageserver.eveonline.com/Alliance/' + profile.AllianceID + '_256.jpg' ;
+              profile.AllianceIcon = '//image.eveonline.com/Alliance/' + profile.AllianceID + '_256.jpg' ;
             };
+            
 
             next(null, profile);
           });
@@ -337,11 +339,13 @@
       function (next) {
         user.setUserField(uid, 'eveonlinessoid', eveonlinessoid, next);
       },
+      //alliance icon
       function (next) {
-        user.setUserField(uid, 'corporationIcon', profile.CorporationIcon, uid, next);
+        user.setUserField(uid, 'alliancepicture', profile.AllianceIcon, next);
       },
+      //corp icon
       function (next) {
-        user.setUserField(uid, 'allianceIcon', profile.AllianceIcon, uid, next);
+        user.setUserField(uid, 'corppicture', profile.CorporationIcon, next);
       },
       function (next) {
         db.setObjectField('eveonlinessoid:uid', eveonlinessoid, uid, next);
