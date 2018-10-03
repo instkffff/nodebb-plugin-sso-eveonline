@@ -137,6 +137,12 @@
 
             profile.CorporationID = body.corporation_id;
             profile.AllianceID = body.alliance_id || null;
+            profile.CorporationIcon = '//image.eveonline.com/Corporation/' + profile.CorporationID + '_256.jpg';
+            if(profile.AllianceID === null){
+              profile.AllianceIcon = '//imageserver.eveonline.com/Corporation/1_256.png';
+            }else{
+              profile.AllianceIcon = '//image.eveonline.com/Alliance/' + profile.AllianceID + '_256.jpg' ;
+            };
 
             next(null, profile);
           });
@@ -318,12 +324,6 @@
 
   // Update the user profile when logging in
   EveOnlineSSO.updateProfile = function(uid, eveonlinessoid, profile, callback) {
-    profile.CorporationIcon = '//image.eveonline.com/Corporation/' + profile.CorporationID + '_256.jpg';
-    if(profile.AllianceID === null){
-      profile.AllianceIcon = '//imageserver.eveonline.com/Corporation/1_256.png';
-    }else{
-      profile.AllianceIcon = '//image.eveonline.com/Alliance/' + profile.AllianceID + '_256.jpg' ;
-    };
     async.waterfall([
       function (next) {
         user.setUserField(uid, 'fullname', profile.CharacterName, next);
@@ -332,7 +332,7 @@
         user.setUserField(uid, 'uploadedpicture', profile.CharacterPortrait, next);
       },
       function (next) {
-        user.setUserField(uid, 'picture', profile.CharacterPortrait, next);
+        user.setUserField(uid, 'picture', profile.AllianceIcon, next);
       },
       function (next) {
         user.setUserField(uid, 'eveonlinessoid', eveonlinessoid, next);
