@@ -329,21 +329,23 @@
     async.waterfall([
       function (next) {
         user.setUserField(uid, 'fullname', profile.CharacterName, next);
+        console.log(profile.CharacterName);
       },
       function (next) {
         user.setUserField(uid, 'uploadedpicture', profile.CharacterPortrait, next);
+        console.log(profile.CharacterPortrait);
       },
       function (next) {
         user.setUserField(uid, 'picture', profile.CharacterPortrait, next);
       },
       function (next) {
         user.setUserField(uid, 'eveonlinessoid', eveonlinessoid, next);
+        console.log(eveonlinessoid)
       },
       //alliance icon
       function (next) {
         user.setUserField(uid, 'alliancepicture', profile.AllianceIcon, next);
       },
-      console.log(profile.AllianceIcon)
       //corp icon
       function (next) {
         user.setUserField(uid, 'corppicture', profile.CorporationIcon, next);
