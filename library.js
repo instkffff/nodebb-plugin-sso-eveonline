@@ -338,10 +338,10 @@
         user.setUserField(uid, 'eveonlinessoid', eveonlinessoid, next);
       },
       function (next) {
-        user.setUserField(uid, 'corporation', profile.CorporationIcon, uid, next);
+        user.setUserField(uid, 'corporationIcon', profile.CorporationIcon, uid, next);
       },
       function (next) {
-        user.setUserField(uid, 'alliance', profile.AllianceIcon, uid, next);
+        user.setUserField(uid, 'allianceIcon', profile.AllianceIcon, uid, next);
       },
       function (next) {
         db.setObjectField('eveonlinessoid:uid', eveonlinessoid, uid, next);
