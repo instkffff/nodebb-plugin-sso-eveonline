@@ -138,14 +138,6 @@
             profile.CorporationID = body.corporation_id;
             profile.AllianceID = body.alliance_id || null;
 
-            profile.CorporationIcon = '//image.eveonline.com/Corporation/' + profile.CorporationID + '_256.jpg';
-            if(profile.AllianceID === null){
-              profile.AllianceIcon = '//imageserver.eveonline.com/Corporation/1_256.png';
-            }else{
-              profile.AllianceIcon = '//image.eveonline.com/Alliance/' + profile.AllianceID + '_256.jpg' ;
-            };
-            
-
             next(null, profile);
           });
         });
@@ -327,28 +319,31 @@
   // Update the user profile when logging in
   EveOnlineSSO.updateProfile = function(uid, eveonlinessoid, profile, callback) {
     async.waterfall([
+      function (next){
+        profile.CorporationIcon = '//image.eveonline.com/Corporation/' + profile.CorporationID + '_256.jpg';
+          if(profile.AllianceID === null){
+            profile.AllianceIcon = '//imageserver.eveonline.com/Corporation/1_256.png';
+          }else{
+            profile.AllianceIcon = '//image.eveonline.com/Alliance/' + profile.AllianceID + '_256.jpg' ;
+        };
+      },
       function (next) {
         user.setUserField(uid, 'fullname', profile.CharacterName, next);
-        console.log(profile.CharacterName);
       },
       function (next) {
         user.setUserField(uid, 'uploadedpicture', profile.CharacterPortrait, next);
-        console.log(profile.CharacterPortrait);
       },
       function (next) {
         user.setUserField(uid, 'picture', profile.CharacterPortrait, next);
       },
       function (next) {
         user.setUserField(uid, 'eveonlinessoid', eveonlinessoid, next);
-        console.log(eveonlinessoid)
       },
-      //alliance icon
       function (next) {
-        user.setUserField(uid, 'alliancepicture', profile.AllianceIcon, next);
+        user.setUserField('eveonlinessoid:uid', profile.CorporationIcon, uid, next);
       },
-      //corp icon
       function (next) {
-        user.setUserField(uid, 'corppicture', profile.CorporationIcon, next);
+        user.setUserField('eveonlinessoid:uid', profile.AllianceIcon, uid, next);
       },
       function (next) {
         db.setObjectField('eveonlinessoid:uid', eveonlinessoid, uid, next);
