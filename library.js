@@ -142,7 +142,7 @@
             if(profile.AllianceID === null){
               profile.AllianceIcon = '//imageserver.eveonline.com/Corporation/1_256.png';
             }else{
-              profile.AllianceIcon = '//imageserver.eveonline.com/Alliance/' + profile.AllianceID + '_256.png' ;
+              profile.AllianceIcon = '//imageserver.eveonline.com/Alliance/' + profile.AllianceID + '_128.png' ;
             };
             
 
